@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
+    env:   # 🔥 GLOBAL ENV (applies to ALL steps)
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -17,32 +23,14 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
-    # 🔥 INIT (backend authentication happens here)
     - name: Terraform Init
       run: terraform init
       working-directory: envs/dev
-      env:
-        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-    # 🔍 PLAN (provider auth)
     - name: Terraform Plan
       run: terraform plan
       working-directory: envs/dev
-      env:
-        TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
-        TF_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
-        TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
 
-    # 🚀 APPLY (provider auth)
     - name: Terraform Apply
       run: terraform apply -auto-approve
       working-directory: envs/dev
-      env:
-        TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
-        TF_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
-        TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
