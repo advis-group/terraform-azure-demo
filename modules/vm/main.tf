@@ -1,4 +1,4 @@
-resource_group_name = var.rg_name
+
 
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet"
